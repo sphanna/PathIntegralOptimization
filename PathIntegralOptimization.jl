@@ -113,7 +113,7 @@ begin
     RDSAcs = [RDSA(yPz,θ₀,Δ,ak,ck,N_RDSA) for i in 1:Nreps]
     RDSAPaths = [Path.(RDSAcs[i],Ref(r0),Ref(rf),Ref(B)) for i in 1:length(RDSAcs)]
     RDSAnormErr = mean(getNormErr(RDSAPaths[i],realPath,normErrDiv) for i in 1:length(RDSAPaths))
-    RDSALs = mean((((LPz.(RDSAcs[i])))) for i in 1:Nreps)
+    RDSALs = mean(LPz.(RDSAcs[i]) for i in 1:Nreps)
 
     println("RAND_Lterm: " * string(RANDLs[end]))
     println("SAN_Lterm: " * string(SANLs[end]))
@@ -124,6 +124,38 @@ begin
     println("RDSA_ErrTerm: " * string(RDSAnormErr[end]))=#
 end
 
+begin #compute means and CIs
+    RANDnorms = [getNormErr(RANDPaths[i],realPath,normErrDiv) for i in 1:length(SANPaths)]
+    RANDnormTerms = last.(RANDnorms)
+    mean(RANDnormTerms)
+    tCI(RANDnormTerms)
+
+    SANnorms = [getNormErr(SANPaths[i],realPath,normErrDiv) for i in 1:length(SANPaths)]
+    SANnormTerms = last.(SANnorms)
+    mean(SANnormTerms)
+    tCI(SANnormTerms)
+
+    RDSAnorms = [getNormErr(RDSAPaths[i],realPath,normErrDiv) for i in 1:length(SANPaths)]
+    RDSAnormTerms = last.(RDSAnorms)
+    mean(RDSAnormTerms)
+    tCI(RDSAnormTerms)
+
+
+    RANDsall = [(((LPz.(RANDcs[i]))/L₀)) for i in 1:Nreps]
+    RANDterms = last.(RANDsall)
+    mean(RANDterms)
+    tCI(RANDterms)
+
+    SANLsall = [(((LPz.(SANcs[i]))/L₀)) for i in 1:Nreps]
+    SANLterms = last.(SANLsall)
+    mean(SANLterms)
+    tCI(SANLterms)
+
+    RDSALsall = [(((LPz.(RDSAcs[i]))/L₀)) for i in 1:Nreps]
+    RDSALterms = last.(RDSALsall)
+    mean(RDSALterms)
+    tCI(RDSALterms)
+end
 
 begin #plots loss values
     x = 1:1:N_SAN
