@@ -16,7 +16,7 @@ function Action(c,B,Δt,m)
     return Δt*(KEsum(Δr,Δt,m) - sum(V.(r,m)))
 end
 
-KEsum(Δr,Δt,m) = (m/2) * (1/Δt^2) * Δr'Δr
+KEsum(Δr,Δt,m) = (m/2) * (Δr'Δr/Δt^2) 
 V(r,m) = Vgrav(r,m)
 
 Vgrav(r,m) = m*9.8*last(r)
@@ -81,7 +81,7 @@ begin #setup
     cₖ(k,c,γ) = c/(k+1)^γ
     a = 0.2; A = 25; α = 0.602;
     c = 2; γ = 0.101;
-    N_RDSA = 250
+    N_RDSA = 100
     #precompute coefficients
     ak = aₖ.(1:N_RDSA,a,A,α)
     ck = cₖ.(1:N_RDSA,c,γ)
@@ -124,6 +124,7 @@ begin
     println("RDSA_ErrTerm: " * string(RDSAnormErr[end]))=#
 end
 
+
 begin #plots loss values
     x = 1:1:N_SAN
     plot(x,RANDLs, label = "RAND B", 
@@ -164,12 +165,13 @@ end
 begin
     plotPathXY!(path0,:blue, "θ₀")
     plotPathXY!(realPath,:darkorange, "θ*")
-    RANDPath = RANDPaths[end][end]
+
+    RANDPath = mean(last.(RANDPaths))
     plotPathXY!(RANDPath,:black, "RAND B")
 
-    SANPath = SANPaths[end][end]
+    SANPath = mean(last.(SANPaths))
     plotPathXY!(SANPath,:red, "SAN")
 
-    RDSAPath = RDSAPaths[end][end]
+    RDSAPath = mean(last.(RDSAPaths))
     plotPathXY!(RDSAPath,:green,"SPSA")
 end
