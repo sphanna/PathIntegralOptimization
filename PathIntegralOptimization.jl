@@ -181,7 +181,7 @@ begin #plot norm Err
     plot!(x,RDSAnormErr, label = "SPSA")
 end
 
-begin
+begin #plot potential map
     xV = -0.2:0.05:3.5
     yV = -0.2:0.05:5.5
     data = [V([j,i],m) for i∈-1:0.05:6,j∈-1:0.05:6]
@@ -194,7 +194,7 @@ begin
         title="Terminal X,Y Paths RAND vs. SAN vs. SPSA")
 end
 
-begin
+begin #plot paths onto potential map
     plotPathXY!(path0,:blue, "θ₀")
     plotPathXY!(realPath,:darkorange, "θ*")
 
